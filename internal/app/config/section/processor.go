@@ -1,0 +1,12 @@
+package section
+
+type (
+	Processor struct {
+		WebServer ProcessorWebServer `split_words:"true"`
+		Http      interface{}
+	}
+
+	ProcessorWebServer struct {
+		ListenPort uint32 `default:"8082" split_words:"true"`
+	}
+)
