@@ -22,6 +22,22 @@ func (c *Client) DB() *gorm.DB {
 	return c.db
 }
 
+func (c *Client) GetDB(ctx context.Context) *gorm.DB {
+	if tx, ok := getTxFromCtx(ctx); ok {
+		return tx
+	}
+	return c.db
+}
+
+func (c *Client) InsideTx(ctx context.Context, fn func(ctx context.Context) error) error {
+	if _, ok := getTxFromCtx(ctx); ok {
+		return fn(ctx)
+	}
+	return c.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		return fn(ctxWithTx(ctx, tx))
+	})
+}
+
 func (c *Client) Close() error {
 	sqlDB, err := c.db.DB()
 	if err != nil {

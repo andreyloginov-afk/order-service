@@ -1,37 +1,31 @@
 package main
 
 import (
-	"context"
-	"log"
+	"fmt"
+	"os"
 
-	"github.com/andreyloginov-afk/order-service/internal/app/config"
-	rhealth "github.com/andreyloginov-afk/order-service/internal/app/handler/http/health"
-	rprocessor "github.com/andreyloginov-afk/order-service/internal/app/processor/http"
-	rcpostgres "github.com/andreyloginov-afk/order-service/internal/app/repository/conn/postgres"
+	"github.com/urfave/cli/v2"
+
+	"github.com/andreyloginov-afk/order-service/cmd"
 )
 
 func main() {
-	config.Load()
-
-	cfg := config.Root
-
-	db, err := rcpostgres.NewClient(context.Background(), cfg.Repository.Postgres)
-	if err != nil {
-		log.Fatalf("failed to connect to postgres: %v", err)
-	}
-	log.Printf("connected to postgres at %s", cfg.Repository.Postgres.Address)
-
-	hHealth := rhealth.NewHandler()
-
-	proc := rprocessor.NewHTTP(hHealth, cfg.Processor.WebServer)
-
-	serveErr := proc.Serve()
-
-	if err := db.Close(); err != nil {
-		log.Printf("failed to close db: %v", err)
+	app := &cli.App{
+		Name:    "order-service",
+		Version: "1.0.0",
+		Usage:   "Order management service",
+		Commands: []*cli.Command{
+			cmd.WebServer(),
+		},
+		Flags: []cli.Flag{
+			&cli.BoolFlag{
+				Name:  "no-json",
+				Usage: "disable JSON logging, use plain text output",
+			},
+		},
 	}
 
-	if serveErr != nil {
-		log.Fatalf("http server error: %v", serveErr)
+	if err := app.Run(os.Args); err != nil {
+		fmt.Fprintln(os.Stderr, err)
 	}
 }
