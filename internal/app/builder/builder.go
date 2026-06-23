@@ -59,7 +59,7 @@ func (b *Builder) BuildConfig() *Builder {
 
 func (b *Builder) Run() error {
 	if b.err != nil {
-		return b.err
+		return nil
 	}
 
 	if b.connPostgres != nil {

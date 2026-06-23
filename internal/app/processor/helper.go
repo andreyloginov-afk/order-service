@@ -5,8 +5,6 @@ import (
 	"io"
 	"sync"
 	"time"
-
-	"github.com/rs/zerolog/log"
 )
 
 type (
@@ -34,9 +32,7 @@ func WatchForShutdown(ctx context.Context, wg *sync.WaitGroup, closer io.Closer)
 	go func() {
 		defer wg.Done()
 		<-ctx.Done()
-		if err := closer.Close(); err != nil {
-			log.Error().Err(err).Msg("Failed to close resource during shutdown")
-		}
+		_ = closer.Close()
 	}()
 }
 
