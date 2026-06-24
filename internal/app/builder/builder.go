@@ -57,7 +57,12 @@ func (b *Builder) BuildConfig() *Builder {
 	return b.exec(b.buildConfig)
 }
 
-func (b *Builder) Run() error {
+func (b *Builder) Run() {
+	if b.ctx.Err() != nil {
+		log.Info().Msg("Shutdown during initialization")
+		return
+	}
+
 	if b.err != nil {
 		log.Fatal().Err(b.err).Msg("Failed to initialize application")
 	}
@@ -67,15 +72,13 @@ func (b *Builder) Run() error {
 	}
 
 	log.Info().Msg("Application initialized")
+	defer log.Info().Msg("Application completed")
 
 	for _, p := range b.processors {
 		p.StartAsync(b.ctx, &b.wg)
 	}
 
 	b.wg.Wait()
-	b.printErrors()
-	log.Info().Msg("Application completed")
-	return b.err
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -125,13 +128,6 @@ func (b *Builder) waitForSignal(ch chan os.Signal, cancel context.CancelFunc) {
 		log.Info().Str("signal", sig.String()).Msg("Shutdown is requested")
 		cancel()
 	case <-b.ctx.Done():
-	}
-}
-
-func (b *Builder) printErrors() {
-	close(b.chErrors)
-	for err := range b.chErrors {
-		log.Error().Err(err).Send()
 	}
 }
 
