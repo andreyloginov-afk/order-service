@@ -39,7 +39,7 @@ func NewHTTP(hHealth rhandler.Health, cfg section.ProcessorWebServer) processor.
 
 	router := gin.New()
 	router.Use(
-		adaptRequestMiddleware(httph.NewErrorMiddleweare()),
+		adaptRequestMiddleware(httph.NewErrorMiddleware()),
 		mzerolog.NewMiddleware(mzerolog.WithSkipper(util.IsFilteredHttpRoute)),
 		gin.Recovery(),
 	)
@@ -60,9 +60,9 @@ func NewHTTP(hHealth rhandler.Health, cfg section.ProcessorWebServer) processor.
 func (p *httpProc) StartAsync(ctx context.Context, wg *sync.WaitGroup) {
 	l, err := (&net.ListenConfig{}).Listen(ctx, "tcp", p.addr)
 	if err != nil {
-		log.Fatal().Err(err).Msg("server cannot start without listener")
+		log.Fatal().Err(err).Str("listen_addr", p.addr).Msg("Failed to start listening TCP addr for HTTP server")
 	}
-	log.Info().Str("addr", p.addr).Msg("HTTP server listening on")
+	log.Info().Str("listen_addr", p.addr).Msg("Listening of TCP addr for HTTP server has been started")
 
 	go p.serve(l)
 

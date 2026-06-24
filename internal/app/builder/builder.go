@@ -59,7 +59,7 @@ func (b *Builder) BuildConfig() *Builder {
 
 func (b *Builder) Run() error {
 	if b.err != nil {
-		return nil
+		log.Fatal().Err(b.err).Msg("Failed to initialize application")
 	}
 
 	if b.connPostgres != nil {

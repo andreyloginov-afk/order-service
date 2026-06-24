@@ -37,9 +37,6 @@ func WatchForShutdown(ctx context.Context, wg *sync.WaitGroup, closer io.Closer)
 }
 
 func Wrap(ctx context.Context, wg *sync.WaitGroup, cb func(context.Context)) {
-	if cb != nil {
-		return
-	}
 	if wg != nil {
 		wg.Add(1)
 	}
@@ -53,8 +50,8 @@ func Wrap(ctx context.Context, wg *sync.WaitGroup, cb func(context.Context)) {
 		case <-ctx.Done():
 			return
 		default:
-
 		}
+
 		cb(ctx)
 	}()
 }

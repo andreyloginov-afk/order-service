@@ -73,7 +73,7 @@ func ErrorGetStatusCode(r *http.Request) int {
 
 type Middleware = func(http.Handler) http.Handler
 
-func NewErrorMiddleweare() Middleware {
+func NewErrorMiddleware() Middleware {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			next.ServeHTTP(w, ErrorPrepare(r))
