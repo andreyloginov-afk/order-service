@@ -8,7 +8,7 @@ GO_FILE := ./main.go
 -include .env
 
 MIGRATION_DIR := ./migration/postgres
-MIGRATION_DSN := postgres://$(APP_REPOSITORY_POSTGRES_USERNAME):$(APP_REPOSITORY_POSTGRES_PASSWORD)@$(APP_REPOSITORY_POSTGRES_ADRESS)/$(APP_REPOSITORY_POSTGRES_NAME)?sslmode=disable
+MIGRATION_DSN := postgres://$(APP_REPOSITORY_POSTGRES_USERNAME):$(APP_REPOSITORY_POSTGRES_PASSWORD)@$(APP_REPOSITORY_POSTGRES_ADDRESS)/$(APP_REPOSITORY_POSTGRES_NAME)?sslmode=disable
 # =============================================================================
 # Справка
 # =============================================================================
