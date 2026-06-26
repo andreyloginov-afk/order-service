@@ -1,8 +1,8 @@
 package mzerolog
 
 import (
-	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -31,11 +31,14 @@ func (m *middleware) Callback(c *gin.Context) {
 		return
 	}
 
-	var msg string
+	var sb strings.Builder
+	sb.WriteString(c.Request.Method)
+	sb.WriteString(" ")
+	sb.WriteString(c.Request.RequestURI)
 	if err != nil {
-		msg = fmt.Sprintf("%s %s finished with error", c.Request.Method, c.Request.RequestURI)
+		sb.WriteString(" finished (or aborted) with error")
 	} else {
-		msg = fmt.Sprintf("%s %s finished with no error", c.Request.Method, c.Request.RequestURI)
+		sb.WriteString(" finished with no error")
 	}
 
 	event := m.log.Debug()
@@ -48,7 +51,8 @@ func (m *middleware) Callback(c *gin.Context) {
 		Ctx(c.Request.Context()).
 		Dur("exec_time", time.Since(start)).
 		Str("client_ip", c.ClientIP()).
-		Msg(msg)
+		Int("http_status_code", httph.ErrorGetStatusCode(c.Request)).
+		Msg(sb.String())
 }
 
 func NewMiddleware(opts ...Option) gin.HandlerFunc {
