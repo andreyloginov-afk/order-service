@@ -106,7 +106,7 @@ func (h *handler) Delete(c *gin.Context) {
 		return
 	}
 
-	httph.SendEmpty(c.Writer, http.StatusNoContent)
+	httph.SendEmpty(c.Writer, http.StatusOK)
 }
 
 func (h *handler) List(c *gin.Context) {

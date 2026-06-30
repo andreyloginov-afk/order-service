@@ -26,14 +26,14 @@ func (r *repoPg) InsideTx(ctx context.Context, fn func(ctx context.Context) erro
 
 func (r *repoPg) Create(ctx context.Context, order entity.Order) error {
 	db := r.conn.GetDB(ctx)
-	result := db.Create(&order)
+	result := db.WithContext(ctx).Create(&order)
 	return result.Error
 }
 
 func (r *repoPg) GetByGUID(ctx context.Context, guid uuid.UUID) (entity.Order, error) {
 	db := r.conn.GetDB(ctx)
 	var order entity.Order
-	result := db.Preload("Items").Where("guid = ?", guid).First(&order)
+	result := db.WithContext(ctx).Preload("Items").Where("guid = ?", guid).First(&order)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return entity.Order{}, entity.ErrNotFound
 	}
@@ -42,8 +42,9 @@ func (r *repoPg) GetByGUID(ctx context.Context, guid uuid.UUID) (entity.Order, e
 
 func (r *repoPg) Update(ctx context.Context, order entity.Order) error {
 	db := r.conn.GetDB(ctx)
-	result := db.Model(&entity.Order{}).Where("guid = ?", order.GUID).Updates(map[string]any{
-		"status": order.Status,
+	result := db.WithContext(ctx).Model(&entity.Order{}).Where("guid = ?", order.GUID).Updates(map[string]any{
+		"status":     order.Status,
+		"updated_at": order.UpdatedAt,
 	})
 
 	if result.Error != nil {
@@ -57,7 +58,7 @@ func (r *repoPg) Update(ctx context.Context, order entity.Order) error {
 
 func (r *repoPg) Delete(ctx context.Context, guid uuid.UUID) error {
 	db := r.conn.GetDB(ctx)
-	result := db.Where("guid = ?", guid).Delete(&entity.Order{})
+	result := db.WithContext(ctx).Where("guid = ?", guid).Delete(&entity.Order{})
 	if result.Error != nil {
 		return result.Error
 	}
@@ -76,7 +77,7 @@ func (r *repoPg) List(ctx context.Context, status *string, userGUID *uuid.UUID) 
 	if userGUID != nil {
 		db = db.Where("user_guid = ?", *userGUID)
 	}
-	result := db.Find(&orders)
+	result := db.WithContext(ctx).Find(&orders)
 
 	return orders, result.Error
 }

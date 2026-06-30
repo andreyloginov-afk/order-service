@@ -75,6 +75,7 @@ func (s *srv) Update(ctx context.Context, guid uuid.UUID, req entity.RequestOrde
 			return err
 		}
 		order.Status = req.Status
+		order.UpdatedAt = time.Now()
 		return s.repoOrder.Update(ctx, order)
 	})
 	return order, err
