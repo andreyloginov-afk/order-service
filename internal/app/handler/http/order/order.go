@@ -35,6 +35,7 @@ func (h *handler) Create(c *gin.Context) {
 
 	httph.SendJSON(c.Writer, http.StatusCreated, entity.ResponseOrderCreate{
 		GUID:       order.GUID,
+		UserGUID:   order.UserGUID,
 		Status:     order.Status,
 		Currency:   order.Currency,
 		TotalPrice: order.TotalPrice,

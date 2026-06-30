@@ -68,11 +68,12 @@ type ResponseOrderItem struct {
 }
 
 type ResponseOrderCreate struct {
-	GUID       uuid.UUID `json:"guid"`
-	Status     string    `json:"status"`
-	Currency   string    `json:"currency"`
-	TotalPrice int64     `json:"total_price"`
-	CreatedAt  time.Time `json:"created_at"`
+	GUID       uuid.UUID  `json:"guid"`
+	UserGUID   *uuid.UUID `json:"user_guid"`
+	Status     string     `json:"status"`
+	Currency   string     `json:"currency"`
+	TotalPrice int64      `json:"total_price"`
+	CreatedAt  time.Time  `json:"created_at"`
 
 	Items []ResponseOrderItem `json:"items"`
 }
