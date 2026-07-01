@@ -9,6 +9,8 @@ import (
 const (
 	tableNameOrder     = `orders`
 	tableNameOrderItem = `order_items`
+
+	OrderStatusPending = "pending"
 )
 
 type Order struct {
@@ -103,6 +105,7 @@ type ResponseOrderListItem struct {
 	TotalPrice int64      `json:"total_price"`
 	Currency   string     `json:"currency"`
 	CreatedAt  time.Time  `json:"created_at"`
+	UpdatedAt  time.Time  `json:"updated_at"`
 }
 
 type ResponseOrderList struct {

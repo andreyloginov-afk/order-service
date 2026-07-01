@@ -134,6 +134,7 @@ func (h *handler) List(c *gin.Context) {
 			TotalPrice: o.TotalPrice,
 			Currency:   o.Currency,
 			CreatedAt:  o.CreatedAt,
+			UpdatedAt:  o.UpdatedAt,
 		}
 	}
 

@@ -41,7 +41,7 @@ func (s *srv) Create(ctx context.Context, req entity.RequestOrderCreate) (entity
 		GUID:       uuid.Must(uuid.NewV4()),
 		UserGUID:   req.UserGUID,
 		Currency:   req.Currency,
-		Status:     "pending",
+		Status:     entity.OrderStatusPending,
 		TotalPrice: totalPrice,
 		CreatedAt:  now,
 		UpdatedAt:  now,
